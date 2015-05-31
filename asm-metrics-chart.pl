@@ -100,7 +100,7 @@ if ($workSheetCol) {
 	}
 }
 
-#print "\nPOS: $workSheetColPos\n";
+print "\nworkSheetColPos: $workSheetColPos\n" if $debug;
 
 # validate the columns to be charted
 # use as an index into the labels

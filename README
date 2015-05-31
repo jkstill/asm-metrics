@@ -1,9 +1,31 @@
 
-## asm-metrics-collector.pl
-
-Original script written at Pythian.
-
+# asm-metrics-collector.pl
 Collect ASM metrics for further processing.
+
+# asm-metrics-collector.sh
+bash driver example 
+
+# asm-metrics-aggregator.pl
+This script aggregates metrics based on one column from raw metrics data.
+eg. Aggregate IO metrics per diskgroup
+
+# asm-metrics-aggregator.sh
+bash driver example - aggregates by diskgroup
+
+# asm-metrics-aggregator_bydisk.sh
+bash driver example - aggregates by diskgroup
+
+# asm-metrics-chart.pl
+Create Excel file with charts of metrics
+
+# asm-metrics-chart.sh
+bash driver example using aggregates by diskgroup
+
+# asm-metrics-chart_bydisk.sh
+bash driver example using aggregates by diskname
+
+# verify.sh
+bash script used for verifying aggregates during development
 
 
 
