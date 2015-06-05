@@ -316,7 +316,7 @@ sub setOptionalColumns($) {
 		'WRITE_ERRS'		=> 'io.write_errs',
 		'HOT_READS'			=> 'io.hot_reads --number of reads from the hot region on disk',
 		'HOT_WRITES'		=> 'io.hot_writes --number of writes to the hot region on disk',
-		'HOST_BYTES_READ'	=> 'io.hot_bytes_read --number of bytes read from the hot region on disk',
+		'HOT_BYTES_READ'	=> 'io.hot_bytes_read --number of bytes read from the hot region on disk',
 		'HOT_BYTES_WRITTEN'	=> 'io.hot_bytes_written --number of bytes written to the hot region on disk',
 		'COLD_READS'		=> 'io.cold_reads --number of reads from the cold region on disk',
 		'COLD_WRITES'		=> 'io.cold_writes --number of writes to the cold region on disk',
