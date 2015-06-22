@@ -133,7 +133,7 @@ print "SQL:\n$asmMetricSQL\n\n" if $debug;
 
 $|++; # do not buffer output
 
-exit;
+#exit;
 
 my $sth=$dbh->prepare($asmMetricSQL);
 $sth->execute;
