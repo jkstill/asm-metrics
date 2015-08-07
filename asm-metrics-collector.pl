@@ -78,13 +78,13 @@ if ( defined($optctl{database}) and defined($optctl{username} ) ) {
 }
 
 
-	#, systimestamp -  to_timestamp(? ,'YYYY-MM-DD HH:MI:SS.FF6') interval
+	#, systimestamp -  to_timestamp(? ,'YYYY-MM-DD HH24:MI:SS.FF6') interval
 
 my $asmMetricSQL = q[
 with data as (
 select
 	to_char(sysdate,'yyyy-mm-dd hh24:mi:ss') displaytime
-	, to_char(systimestamp ,'YYYY-MM-DD HH:MI:SS.FF6') snaptime
+	, to_char(systimestamp ,'YYYY-MM-DD HH24:MI:SS.FF6') snaptime
 	, 0 elapsedtime -- calculated field
 	, io.instname
 	, io.dbname

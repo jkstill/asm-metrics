@@ -13,7 +13,7 @@ eg. Aggregate IO metrics per diskgroup
 bash driver example - aggregates by diskgroup
 
 # asm-metrics-aggregator_bydisk.sh
-bash driver example - aggregates by diskgroup
+bash driver example - aggregates by disk
 
 # asm-metrics-chart.pl
 Create Excel file with charts of metrics
@@ -24,8 +24,12 @@ bash driver example using aggregates by diskgroup
 # asm-metrics-chart_bydisk.sh
 bash driver example using aggregates by diskname
 
+# asm-metrics-validate.pl
+Perl script used to look for negative values in raw CSV files.
+Used for some debugging.
+This script can be used to look for any value with minor adjustment
+
 # verify.sh
 bash script used for verifying aggregates during development
-
 
 
