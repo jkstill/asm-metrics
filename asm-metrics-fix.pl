@@ -16,7 +16,7 @@ use strict;
 use warnings;
 use IO::File;
 
-my $debug=0;
+my $debug=1;
 my $dateLen=19; # YYYY-MM-DD HH24:MI:SS results in a 19 character date 
 
 # locations of column names in the row
@@ -37,27 +37,30 @@ my $delimiter=',';
 my $inputFile='abc123';
 my $fh;
 
+my $break='#' x 80;
+
 while (<>) {
+
+	my $line=$_;
 
 	my $newInputFile=$ARGV;
 	if ($inputFile ne $newInputFile) {
-		my $headers=<>;
+		print "Headers: $line" if $debug;
 		$inputFile=$newInputFile;
 		# assuming here that filename has a '.csv' suffix
 		my $flen = length($inputFile);
 		my $outputFile=substr($inputFile,0,$flen-4) . '-corrected.csv';
-		if (defined($fh)) {
-			print $fh "\n";
-		}
+		#if (defined($fh)) {
+			#print $fh "\n";
+		#}
 		$fh = IO::File->new();
 
 		#open CSVOUT, '>', $outputFile or die "cannot create $outputFile - $!\n";
 		$fh->open($outputFile,'>') or die "cannot create $outputFile - $!\n";
-		print $fh $headers;
+		print $fh $line;
 		next;
 	}
 
-	my $line=$_;
 	my @row=split(/$delimiter/,$line);
 	my ($displayTime, $snapTime, $elapsedTime);
 	$displayTime=$row[$locations{DISPLAYTIME}];
@@ -70,7 +73,7 @@ while (<>) {
 
 		if ( substr($snapTime,0,$dateLen) ne $displayTime ) {
 			warn qq[
-###########################
+$break
 Orig Disptime: $displayTime
 Orig Snaptime: $snapTime
 ] if $debug;
