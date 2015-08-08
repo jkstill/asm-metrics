@@ -34,7 +34,6 @@ my $useSnaptime = exists ($locations{SNAPTIME}) ? 1 : 0;
 warn "useSnaptime: $useSnaptime\n" if $debug;
 
 my $delimiter=',';
-my $headers=<>;
 my $inputFile='abc123';
 my $fh;
 
@@ -42,6 +41,7 @@ while (<>) {
 
 	my $newInputFile=$ARGV;
 	if ($inputFile ne $newInputFile) {
+		my $headers=<>;
 		$inputFile=$newInputFile;
 		# assuming here that filename has a '.csv' suffix
 		my $flen = length($inputFile);
@@ -54,6 +54,7 @@ while (<>) {
 		#open CSVOUT, '>', $outputFile or die "cannot create $outputFile - $!\n";
 		$fh->open($outputFile,'>') or die "cannot create $outputFile - $!\n";
 		print $fh $headers;
+		next;
 	}
 
 	my $line=$_;
