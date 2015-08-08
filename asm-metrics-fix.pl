@@ -16,7 +16,7 @@ use strict;
 use warnings;
 use IO::File;
 
-my $debug=1;
+my $debug=0;
 my $dateLen=19; # YYYY-MM-DD HH24:MI:SS results in a 19 character date 
 
 # locations of column names in the row
