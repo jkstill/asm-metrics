@@ -9,9 +9,14 @@ use Data::Dumper;
 #use Data::TreeDumper;
 use Getopt::Long;
 
-sub setOptionalColumns($);
+my $timestampFormat= 'yyyy-mm-dd hh24:mi:ss.ff6';
+my $dateFormat= 'yyyy-mm-dd hh24:mi:ss';
+my($db, $username, $password, $connectionMode);
+
+
+sub setOptionalColumns($$);
 my %optionalColumnsAvail=();
-setOptionalColumns(\%optionalColumnsAvail);
+setOptionalColumns(\%optionalColumnsAvail,$dateFormat);
 #print "OPTIONAL COLUMNS:\n ", Dumper(\%optionalColumnsAvail);
 #exit;
 
@@ -44,14 +49,10 @@ my $interval = defined($optctl{interval}) ? $optctl{interval} : 60;
 my $delimiter = defined($optctl{delimiter}) ? $optctl{delimiter} : ',';
 my $iterations = defined($optctl{iterations}) ? $optctl{iterations} : 5;
 my $debug = defined($optctl{debug}) ? 1 : 0;
-my $timestamp_format= 'yyyy-mm-dd hh24:mi:ss.ff6';
-
-my($db, $username, $password, $connectionMode);
-
-$connectionMode = 0;
-if ( $optctl{sysdba} ) { $connectionMode = 2 }
 
 # assume connection is to local instance as SYSDBA via bequeath if db and username not defined
+$connectionMode = 0;
+if ( $optctl{sysdba} ) { $connectionMode = 2 }
 
 
 my $dbh='';
@@ -78,13 +79,11 @@ if ( defined($optctl{database}) and defined($optctl{username} ) ) {
 }
 
 
-	#, systimestamp -  to_timestamp(? ,'YYYY-MM-DD HH24:MI:SS.FF6') interval
-
-my $asmMetricSQL = q[
+my $asmMetricSQL = qq[
 with data as (
 select
-	to_char(sysdate,'yyyy-mm-dd hh24:mi:ss') displaytime
-	, to_char(systimestamp ,'YYYY-MM-DD HH24:MI:SS.FF6') snaptime
+	to_char(sysdate,'$dateFormat') displaytime
+	, to_char(systimestamp ,'$timestampFormat') snaptime
 	, 0 elapsedtime -- calculated field
 	, io.instname
 	, io.dbname
@@ -196,7 +195,7 @@ for (my $i=0;$i<$iterations;$i++) {
 			# Consideration was given to changing this to a PL/SQL routine rather than select from dual
 			# 'select from dual' has become quite optimized, while PL/SQL would be kind of cumbersome and kludgy in this context
 			# we do not want to create a funtion in the database, and retrieving the data via PL/SQL block is kludgy
-			my $sql = q[select extract( second from to_timestamp(?, 'yyyy-mm-dd hh24:mi:ss.ff6') - to_timestamp(?, 'yyyy-mm-dd hh24:mi:ss.ff6')) seconds from dual];
+			my $sql = qq[select extract( second from to_timestamp(?, '$timestampFormat') - to_timestamp(?, '$timestampFormat')) seconds from dual];
 			my $sth=$dbh->prepare($sql);
 
 			print qq[
@@ -289,8 +288,10 @@ $dbh->disconnect;
 
 # set optional columns 
 # takes a hash ref
-sub setOptionalColumns($) {
+sub setOptionalColumns($$) {
 	my $href=shift;
+	my $dateFormat=shift;
+
 	%{$href} = (
 		'HEADER_STATUS'	=> 'd.header_status',
 		'REDUNDANCY'		=> 'd.redundancy -- refers to redundancy of external schemes - RAID1, RAID5 (MIRROR,PARITY)',
@@ -305,8 +306,8 @@ sub setOptionalColumns($) {
 		'PATH'				=> 'd.path',
 		'UDID'				=> 'd.udid',
 		'PRODUCT'			=> 'd.product -- mfg name',
-		'CREATE_DATE'		=> q[to_char(d.create_date,'yyyy-mm-dd hh24:mi:ss') create_date],
-		'MOUNT_DATE'		=> q[to_char(d.mount_date,'yyyy-mm-dd hh24:mi:ss') mount_date],
+		'CREATE_DATE'		=> qq[to_char(d.create_date,'$dateFormat') create_date],
+		'MOUNT_DATE'		=> qq[to_char(d.mount_date,'$dateFormat') mount_date],
 		'REPAIR_TIMER'		=> 'd.repair_timer',
 		'PREFERRED_READ'	=> 'd.preferred_read',
 		'VOTING_FILE'		=> 'd.voting_file',
