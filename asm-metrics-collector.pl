@@ -195,17 +195,32 @@ for (my $i=0;$i<$iterations;$i++) {
 			# Consideration was given to changing this to a PL/SQL routine rather than select from dual
 			# 'select from dual' has become quite optimized, while PL/SQL would be kind of cumbersome and kludgy in this context
 			# we do not want to create a funtion in the database, and retrieving the data via PL/SQL block is kludgy
-			my $sql = qq[select extract( second from to_timestamp(?, '$timestampFormat') - to_timestamp(?, '$timestampFormat')) seconds from dual];
-			my $sth=$dbh->prepare($sql);
+			my $sql = qq[with timedata as (
+	select
+		to_timestamp(?,'$timestampFormat')
+		- to_timestamp(?,'$timestampFormat')
+	timediff
+	from dual
+)
+select (
+	(extract( day from timediff) * 24 * 60 * 60 )
+	+ (extract( hour from timediff) * 60 * 60 )
+	+ (extract( minute from timediff) * 60)
+	+ extract( second from timediff)
+) seconds
+from timedata];
 
-			print qq[
-				Current  Timestamp: $currSnap{$key}->[$names{SNAPTIME}]
-				Previous Timestamp: $prevSnap{$key}->[$names{SNAPTIME}]
-			] if $debug;
+			my $sth=$dbh->prepare($sql);
 
 			$sth->execute($currSnap{$key}->[$names{SNAPTIME}],$prevSnap{$key}->[$names{SNAPTIME}]);
 
 			($elapsedTime) = $sth->fetchrow_array;
+
+			print qq[
+				Current  Timestamp: $currSnap{$key}->[$names{SNAPTIME}]
+				Previous Timestamp: $prevSnap{$key}->[$names{SNAPTIME}]
+				           Elapsed: $elapsedTime
+			] if $debug;
 
 		};
 
