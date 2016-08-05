@@ -7,12 +7,15 @@ use Pod::Usage;
 use Data::Dumper;
 # use this where available
 #use Data::TreeDumper;
+
+# This just left here for reference due to issue encountered on client site
+#OH/perl/lib version of Getopt::Long is 2.34 - 2.35+ is required
+#use lib '/usr/opt/perl5/lib/5.8.8';
 use Getopt::Long;
 
 my $timestampFormat= 'yyyy-mm-dd hh24:mi:ss.ff6';
 my $dateFormat= 'yyyy-mm-dd hh24:mi:ss';
 my($db, $username, $password, $connectionMode);
-
 
 sub setOptionalColumns($$);
 my %optionalColumnsAvail=();
@@ -85,8 +88,9 @@ select
 	to_char(sysdate,'$dateFormat') displaytime
 	, to_char(systimestamp ,'$timestampFormat') snaptime
 	, 0 elapsedtime -- calculated field
-	, io.instname
-	, io.dbname
+	, io.inst_id
+	--, io.instname
+	--, io.dbname
 	, io.group_number
 	, io.disk_number
 	, g.name DISKGROUP_NAME
@@ -117,13 +121,17 @@ if ($optionalColumns[0] eq 'ALL-COLUMNS') {
 }
 
 $asmMetricSQL .= q[
-from gv$asm_disk_iostat io
+--from gv$asm_disk_iostat io
+from gv$asm_disk_stat io
 join gv$asm_disk d on d.inst_id = io.inst_id
 	and d.group_number = io.group_number
 	and d.disk_number = io.disk_number
 join gv$asm_diskgroup g on g.inst_id = d.inst_id
 	and g.group_number = d.group_number
-where d.mount_status = 'CACHED'
+-- OPENED is standard on 10g
+-- CACHED is standard on 11g+
+-- check the docs
+where d.mount_status = 'OPENED'
 order by 1,2,3,4)
 select * from data];
 
@@ -169,9 +177,11 @@ my %currSnap=();
 
 # get first set and use to calculate values for the first current set
 while( my $ary = $sth->fetchrow_arrayref ) {
-	my $key = join(':',( $ary->[$names{INSTNAME}],  $ary->[$names{DBNAME}], $ary->[$names{GROUP_NUMBER}], $ary->[$names{DISK_NUMBER}]));
+	#my $key = join(':',( $ary->[$names{INSTNAME}],	 $ary->[$names{DBNAME}], $ary->[$names{GROUP_NUMBER}], $ary->[$names{DISK_NUMBER}]));
+	my $key = join(':',( $ary->[$names{INST_ID}],  $ary->[$names{GROUP_NUMBER}], $ary->[$names{DISK_NUMBER}]));
 	push @{$prevSnap{$key}}, @{$ary};
 }
+
 
 for (my $i=0;$i<$iterations;$i++) {
 
@@ -181,7 +191,8 @@ for (my $i=0;$i<$iterations;$i++) {
 	$sth->execute;
 	while( my $ary = $sth->fetchrow_arrayref ) {
 
-		my $key = join(':',( $ary->[$names{INSTNAME}],  $ary->[$names{DBNAME}], $ary->[$names{GROUP_NUMBER}], $ary->[$names{DISK_NUMBER}]));
+		#my $key = join(':',( $ary->[$names{INSTNAME}],	 $ary->[$names{DBNAME}], $ary->[$names{GROUP_NUMBER}], $ary->[$names{DISK_NUMBER}]));
+		my $key = join(':',( $ary->[$names{INST_ID}],  $ary->[$names{GROUP_NUMBER}], $ary->[$names{DISK_NUMBER}]));
 		if ($debug) {
 			print "key: $key\n";
 			print 'data: ' . join($delimiter,@{$ary}),"\n";
@@ -199,7 +210,7 @@ for (my $i=0;$i<$iterations;$i++) {
 			my $sth=$dbh->prepare($sql);
 
 			print qq[
-				Current  Timestamp: $currSnap{$key}->[$names{SNAPTIME}]
+				Current	Timestamp: $currSnap{$key}->[$names{SNAPTIME}]
 				Previous Timestamp: $prevSnap{$key}->[$names{SNAPTIME}]
 			] if $debug;
 
@@ -217,12 +228,10 @@ for (my $i=0;$i<$iterations;$i++) {
 
 CurrSnap:
 Display Time $currSnap{$key}->[$names{DISPLAYTIME}]
-   Snap Time $currSnap{$key}->[$names{SNAPTIME}]
-    instname $currSnap{$key}->[$names{INSTNAME}]
-      dbname $currSnap{$key}->[$names{DBNAME}]
-      group# $currSnap{$key}->[$names{GROUP_NUMBER}]
-       disk# $currSnap{$key}->[$names{DISK_NUMBER}]
-   failgroup $currSnap{$key}->[$names{FAILGROUP}]
+	Snap Time $currSnap{$key}->[$names{SNAPTIME}]
+		group# $currSnap{$key}->[$names{GROUP_NUMBER}]
+		 disk# $currSnap{$key}->[$names{DISK_NUMBER}]
+	failgroup $currSnap{$key}->[$names{FAILGROUP}]
 
 		} if $debug;
 
@@ -292,15 +301,12 @@ sub setOptionalColumns($$) {
 	my $href=shift;
 	my $dateFormat=shift;
 
+	# removed columns not available on 10g
 	%{$href} = (
 		'HEADER_STATUS'	=> 'd.header_status',
 		'REDUNDANCY'		=> 'd.redundancy -- refers to redundancy of external schemes - RAID1, RAID5 (MIRROR,PARITY)',
-		'OS_MB'				=> 'd.os_mb -- disk size as reported by OS',
 		'TOTAL_MB'			=> 'd.total_mb',
 		'FREE_MB'			=> 'd.free_mb',
-		'HOT_USED_MB'		=> 'd.hot_used_mb',
-		'COLD_USED_MB'		=> 'd.cold_used_mb',
-		'DISK_NAME'			=> 'd.name DISK_NAME',
 		'FAILGROUP'			=> 'd.failgroup',
 		'LABEL'				=> 'd.label',
 		'PATH'				=> 'd.path',
@@ -309,20 +315,8 @@ sub setOptionalColumns($$) {
 		'CREATE_DATE'		=> qq[to_char(d.create_date,'$dateFormat') create_date],
 		'MOUNT_DATE'		=> qq[to_char(d.mount_date,'$dateFormat') mount_date],
 		'REPAIR_TIMER'		=> 'd.repair_timer',
-		'PREFERRED_READ'	=> 'd.preferred_read',
-		'VOTING_FILE'		=> 'd.voting_file',
-		'SECTOR_SIZE'		=> 'd.sector_size',
-		'FAILGROUP_TYPE'	=> 'd.failgroup_type',
 		'READ_ERRS'			=> 'io.read_errs',
 		'WRITE_ERRS'		=> 'io.write_errs',
-		'HOT_READS'			=> 'io.hot_reads --number of reads from the hot region on disk',
-		'HOT_WRITES'		=> 'io.hot_writes --number of writes to the hot region on disk',
-		'HOT_BYTES_READ'	=> 'io.hot_bytes_read --number of bytes read from the hot region on disk',
-		'HOT_BYTES_WRITTEN'	=> 'io.hot_bytes_written --number of bytes written to the hot region on disk',
-		'COLD_READS'		=> 'io.cold_reads --number of reads from the cold region on disk',
-		'COLD_WRITES'		=> 'io.cold_writes --number of writes to the cold region on disk',
-		'COLD_BYTES_READ' => 'io.cold_bytes_read --number of bytes read from the cold region on disk',
-		'COLD_BYTES_WRITTEN'	=> 'io.cold_bytes_written --number of bytes written to the cold region on disk'
 	);
 
 }
@@ -334,7 +328,7 @@ __END__
 asm-metrics-collector.pl
 
 -help brief help message
--man  full documentation
+-man	full documentation
 -interval seconds between snapshots - default is 0
 -iterations number of snapshots - default is 5
 -delimiter output field delimiter - default is ,
@@ -344,15 +338,15 @@ asm-metrics-collector.pl
 sample [options] [file ...]
 
  Options:
-   --help brief help message
-   --man  full documentation
-   --database tnsname of oracle database
-   --username oracle user name
-   --sysdba connect as sysdba if this option is used
-   --interval seconds between snapshots - default is 0
-   --iterations number of snapshots - default is 5
-   --opt-cols optional columns to collect - if ALL-COLUMNS is the first argument than all available columns will be output
-   --delimiter output field delimiter - default is ,
+	--help brief help message
+	--man	 full documentation
+	--database tnsname of oracle database
+	--username oracle user name
+	--sysdba connect as sysdba if this option is used
+	--interval seconds between snapshots - default is 0
+	--iterations number of snapshots - default is 5
+	--opt-cols optional columns to collect - if ALL-COLUMNS is the first argument than all available columns will be output
+	--delimiter output field delimiter - default is ,
 
 =head1 OPTIONS
 
@@ -402,13 +396,9 @@ The character used as a delimiter between output fields for the CSV output.
 B< Available Optional Columns:>
 
  OS_MB TOTAL_MB FREE_MB HEADER_STATUS
- REDUNDANCY DISK_NAME FAILGROUP LABEL PATH UDID
+ REDUNDANCY FAILGROUP LABEL PATH UDID
  PRODUCT CREATE_DATE MOUNT_DATE REPAIR_TIMER
- PREFERRED_READ VOTING_FILE SECTOR_SIZE FAILGROUP_TYPE
  READ_ERRS WRITE_ERRS 
- HOT_USED_MB COLD_USED_MB
- HOT_READS HOT_WRITES HOT_BYTES_READ HOT_BYTES_WRITTEN
- COLD_READS COLD_WRITES COLD_BYTES_READ COLD_BYTES_WRITTEN
 
 =back
 
@@ -433,11 +423,11 @@ These examples all connect to the local instance specified in ORACLE_SID as SYSD
 
 20 snapshots at 10 second intervals
 
-  asm-metrics-collector.pl  -interval 10 -iterations 20 -delimiter ,
+  asm-metrics-collector.pl	 -interval 10 -iterations 20 -delimiter ,
 
 5 snapshots at 60 second intervals
 
-  asm-metrics-collector.pl  > my-asm.csv
+  asm-metrics-collector.pl	 > my-asm.csv
 
 Add optional columns to output
 
