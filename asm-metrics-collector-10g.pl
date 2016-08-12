@@ -82,8 +82,8 @@ if ( defined($optctl{database}) and defined($optctl{username} ) ) {
 }
 
 
-my $asmMetricSQL = qq[
-with data as (
+my $asmMetricSQL = qq[select * from 
+(
 select
 	to_char(sysdate,'$dateFormat') displaytime
 	, to_char(systimestamp ,'$timestampFormat') snaptime
@@ -132,8 +132,7 @@ join gv$asm_diskgroup g on g.inst_id = d.inst_id
 -- CACHED is standard on 11g+
 -- check the docs
 where d.mount_status in ('CACHED', 'OPENED')
-order by 1,2,3,4)
-select * from data];
+order by 1,2,3,4)];
 
 
 print "SQL:\n$asmMetricSQL\n\n" if $debug;
@@ -206,20 +205,19 @@ for (my $i=0;$i<$iterations;$i++) {
 			# Consideration was given to changing this to a PL/SQL routine rather than select from dual
 			# 'select from dual' has become quite optimized, while PL/SQL would be kind of cumbersome and kludgy in this context
 			# we do not want to create a funtion in the database, and retrieving the data via PL/SQL block is kludgy
-			my $sql = qq[with timedata as (
-	select
-		to_timestamp(?,'$timestampFormat')
-		- to_timestamp(?,'$timestampFormat')
-	timediff
-	from dual
-)
-select (
+			my $sql = qq[ select (
 	(extract( day from timediff) * 24 * 60 * 60 )
 	+ (extract( hour from timediff) * 60 * 60 )
 	+ (extract( minute from timediff) * 60)
 	+ extract( second from timediff)
 ) seconds
-from timedata];
+from (
+	select
+		to_timestamp(?,'$timestampFormat')
+		- to_timestamp(?,'$timestampFormat')
+	timediff
+	from dual
+)];
 
 			my $sth=$dbh->prepare($sql);
 
