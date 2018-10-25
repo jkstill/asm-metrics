@@ -140,6 +140,8 @@ while (<>) {
 		$currWorkSheetName='ASM-Metrics';
 	}
 
+	print "Worksheet Name: $currWorkSheetName\n" if $debug;
+
 	unless (defined $workSheets{$currWorkSheetName}) {
 		$workSheets{$currWorkSheetName} = $workBook->add_worksheet($currWorkSheetName);
 		$workSheets{$currWorkSheetName}->write_row($lineCount{$currWorkSheetName}++,0,\@labels,$boldFormat);
