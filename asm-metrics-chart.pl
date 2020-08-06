@@ -18,6 +18,7 @@ my $debug = 0;
 my %optctl = ();
 my ($help,$man);
 my @chartCols;
+my $seriesLocator=0;
 
 Getopt::Long::GetOptions(
 	\%optctl, 
@@ -25,6 +26,7 @@ Getopt::Long::GetOptions(
 	'debug!' => \$debug,
 	'chart-cols=s{1,10}' => \@chartCols,
 	'worksheet-col=s',  # creates a separate worksheet per value of this column
+	'date-time-sep!' => \$seriesLocator,
 	'h|help|?' => \$help, man => \$man
 ) or pod2usage(2) ;
 
@@ -181,7 +183,8 @@ foreach my $workSheet ( keys %workSheets ) {
 		# [ sheet, row_start, row_end, col_start, col_end]
 		$chart->add_series(
 			name => $col2Chart,
-			categories => [$workSheet, 1,$lineCount{$workSheet},0,0],
+			#categories => [$workSheet, 1,$lineCount{$workSheet},0,0],
+			categories => [$workSheet, 1,$lineCount{$workSheet},$seriesLocator,$seriesLocator],
 			values => [$workSheet, 1,$lineCount{$workSheet},$colPos,$colPos]
 		);
 
@@ -202,6 +205,8 @@ asm-metrics-chart.pl
   --worksheet-col name of column used to segragate data into worksheets 
     defaults to a single worksheet if not supplied
   --chart-cols list of columns to chart
+  --date-time-sep used to locate the series data for timestamps when
+                  the timestamp has been split to Date and Time via asm-metrics-synth.pl
 
  asm-metrics-chart.pl accepts input from STDIN
 
@@ -219,6 +224,8 @@ asm-metrics-chart.pl [options] [file ...]
    --worksheet-col name of column used to segragate data into worksheets 
      defaults to a single worksheet if not supplied
   --chart-cols list of columns to chart
+  --date-time-sep used to locate the series data for timestamps when
+                  the timestamp has been split to Date and Time via asm-metrics-synth.pl
 
 
  asm-metrics-chart.pl accepts input from STDIN
