@@ -17,9 +17,9 @@ DAYS_TO_COLLECT=10
 INTERVAL_SECONDS=19
 ITERATIONS_PER_DAY=4223
 
-cd ~/asm-metrics || {
+cd "$ASM_METRICS_HOME" || {
 	echo
-	echo Failed to CD to $"ASM_METRICS_HOME"
+	echo Failed to CD to "$ASM_METRICS_HOME"
 	echo 
 	exit 1
 }
