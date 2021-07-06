@@ -136,7 +136,7 @@ The scripts that do this:
 - asm-metrics-synth.pl
 - asm-metrics-synth.sh
 
-The `asm-metrics-synch.sh` script is just a driver for `asm-metrics-synth.pl`, and gets its input from the `output` directory of the previous step.
+The `asm-metrics-synth.sh` script is just a driver for `asm-metrics-synth.pl`, and gets its input from the `output` directory of the previous step.
 
 New files are written to the `synth` directory.
 
@@ -178,6 +178,21 @@ To further simplify charting, the data can be split into diskgroup based files.
 The `asm-diskgroup-breakout.sh` is a fairly simple Bash script that creates diskgroup based files, taking its input from the `synth` directory of the previous step.
 
 New files are written to the `diskgroup-breakout` directory.
+
+
+## Remove Outliers and Spikes
+
+Sometimes there may be outliers and very large spikes. These tend to skew the data and make the charts hard to read.
+
+In extreme cases a chart may consist of some spike connected by a flat line.
+
+Normally you would like to see that data charted.
+
+The data for each file is piped through two Python scripts, `outlier-remove.py` and `flatten.py`.
+
+These CSV files and XLS files are placed in directories with a suffix of '-chart'.
+
+Should you not want these, simply comment out the `asm-*clean*.sh` lines in `runall.sh`.
 
 
 ## Charting Data
