@@ -11,7 +11,7 @@ do
 
 	echo working on $xlsxFile
 
-	./asm-metrics-chart.pl \
+	asm-metrics-chart.pl \
 		--worksheet-col DATE \
 		--date-time-sep \
 		--spreadsheet-file $xlsxFile \

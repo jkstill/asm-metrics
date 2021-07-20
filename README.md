@@ -264,5 +264,31 @@ sys     0m23.900s
 
 ```
 
+## Running all scripts for a collection of files per RAC system 
+
+
+ASM Metrics files are to be organized like this:
+
+```text
+cluster-01/
+  node-01/logs
+  node-02/logs
+  node-03/logs
+cluster-02
+  node-01/logs
+  node-02/logs
+  node-03/logs
+  node-04/logs
+...
+
+```
+
+Then:
+
+```./runall-cluster.sh```
+
+
+
+
 
 

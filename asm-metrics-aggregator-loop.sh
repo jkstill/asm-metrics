@@ -10,7 +10,7 @@ do
 
 	echo working on $OUTPUT_DATAFILE
 
-./asm-metrics-aggregator.pl  \
+asm-metrics-aggregator.pl  \
 	--grouping-cols DISKGROUP_NAME \
 	--agg-cols READS WRITES READ_TIME WRITE_TIME BYTES_READ BYTES_WRITTEN READ_ERRS WRITE_ERRS\
 	--display-cols  DISPLAYTIME ELAPSEDTIME DISKGROUP_NAME READS \
