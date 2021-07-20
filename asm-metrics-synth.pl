@@ -34,6 +34,10 @@ while (<$fhIn>) {
 	my @data=split(/,/);
 	my ($date, $time) = split(/\s+/,$data[0]);
 	my ($reads,$writes,$readTime,$writeTime) = @data[3..6];
+	$reads = 0 unless $reads;
+	$writes = 0 unless $writes;
+	$readTime = 0 unless $readTime;
+	$writeTime = 0 unless $writeTime;
 
 	print qq{
        reads: $reads
@@ -47,6 +51,7 @@ while (<$fhIn>) {
 
 	if ( $reads > 0 ) { $avgReadTime = sprintf("%3.6f",$readTime / $reads) }
 	if ( $writes > 0 ) { $avgWriteTime = sprintf("%3.6f",$writeTime / $writes) }
+
 
 	splice @data,3,0,($avgReadTime,$avgWriteTime);
 	splice @data,0,1,($date,$time);
