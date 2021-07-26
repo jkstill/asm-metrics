@@ -149,7 +149,7 @@ def main():
   #print('colRefs: {}'.format(colRefs))
 
   workingColumns = []
-  for column in sys.argv[2:]:
+  for column in sys.argv[1:]:
     workingColumns.append(column)
 
   validateWorkingColumns(hdr,workingColumns)
