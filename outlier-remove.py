@@ -20,6 +20,16 @@ def detectOutliers(dataset):
     mean_1 = np.mean(arrayData)
     std_1 =np.std(arrayData)
 
+    #if std_1 < 0.1:
+      #std_1 = 0.1
+
+    # stddev of zero can occur in columns of zeros  - ie. no activity
+    # the resulting error is "RuntimeWarning: invalid value encountered in double_scalars"
+    # while it does not cause any harm, it is annoying
+
+    if std_1 == 0:
+      std_1 = 1
+
     for y in arrayData:
 
       z_score=0
