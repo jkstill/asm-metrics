@@ -80,6 +80,29 @@ def getColRefs(hdrLine):
 def getColSets(lines):
   pass
 
+def cleanData(lines):
+
+  cleanLines=[]
+  
+  for line in lines:
+    a = line.split(',')
+
+    #print('cleanData: {}'.format(a))
+
+    if ('LINUX-RESTART' in a) \
+        or ('# hostname' in a) \
+        or ('timestamp' in a) \
+        or ('hostname' in a):
+
+      #print('a: {}'.format(a))
+      #print('skipping line: {}'.format(line))
+
+      continue
+
+    cleanLines.append(line)
+
+  return cleanLines
+  
 
 # get a dict of arrays for the data
 # used as source to detect outliers per column
@@ -88,6 +111,7 @@ def getDataSet(columnRef,workingColumns,lines):
   #print('column#: {}'.format(columnRef))
   for line in lines:
     a = line.split(',')
+
     for colName in workingColumns:
       #print('colName: {}'.format(colName))
       colNum = columnRef[colName]
@@ -99,14 +123,16 @@ def getDataSet(columnRef,workingColumns,lines):
 
   return colVals
 
-
 def removeOutliers(outliers, lines, removedLines):
   # outliers is a dict of lists
   # the key is the column number in the line
   # remove any line where any of the references values is an outlier
   for line in lines:
     a = line.split(',')
+    
     for colNum in outliers:
+      #print("colNum: {}   a[colNum]: {}".format(colNum, a[colNum]))
+
       if float(a[colNum]) in outliers[colNum]:
         removedLines.append(line)
         lines.remove(line)
@@ -139,6 +165,7 @@ def main():
 
   lines = getLines()
   hdr = getHdr(lines) # array
+  lines = cleanData(lines)
 
   if sys.argv[1] == 'hdrs':
     hdrList='\n'.join(hdr)
