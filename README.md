@@ -131,7 +131,7 @@ Usually `asm-metrics-aggregator-loop.sh` script is used, which reads files from 
 So as to avoid doing this step in Excel, Google Sheets, or other charting tools, the averages can be calcualted for average read and write times, and written to a new file.
 
 
-The scripts that do this:
+Some of the scripts that do this:
 
 - asm-metrics-synth.pl
 - asm-metrics-synth.sh
@@ -192,7 +192,7 @@ The data for each file is piped through two Python scripts, `outlier-remove.py` 
 
 These CSV files and XLS files are placed in directories with a suffix of '-chart'.
 
-Should you not want these, simply comment out the `asm-*clean*.sh` lines in `runall.sh`.
+Should you not want these, simply comment out the `asm-*clean*.sh` lines in `run-std.sh`.
 
 
 ## Charting Data
@@ -221,7 +221,7 @@ The output is Excel files, written to the `xlsx-by-diskgroup` directory.
 
 ## Running all scripts
 
-The commands to process all data were put into a the Bash script, `runall.sh`.
+The commands to process all data were put into a the Bash script, `run-std.sh`.
 
 ```shell
 #!/usr/bin/env bash
@@ -233,7 +233,7 @@ The commands to process all data were put into a the Bash script, `runall.sh`.
 ```
 
 ```text
-$  time ./runall.sh
+$  time ./run-std.sh
 working on output/asm-data-20200731-085514.csv
 working on output/asm-data-20200801-084753.csv
 working on output/asm-data-20200802-083738.csv
@@ -285,10 +285,31 @@ cluster-02
 
 Then:
 
-```./runall-cluster.sh```
+`./runall-cluster.s`
 
 
+## Granularity of Data
 
+The data is collected at the ASM device level.
 
+This means that data can be sliced and diced many ways.
 
+For instance, take a look at the *dg-diskgroup* scripts:
+
+```text
+$ ls -1 *db-diskgroup*
+
+asm-db-diskgroup-breakout.sh
+asm-metrics-aggregator-db-diskgroup.sh
+asm-metrics-chart-db-diskgroup-synth.sh
+asm-metrics-chart-db-diskgroup.sh
+asm-metrics-db-diskgroup-synth.pl
+asm-metrics-db-diskgroup-synth.sh
+run-db-diskgroup.sh
+
+```
+
+These scripts can be used to create charts for each database and diskgroup pairing.
+
+For instance, if there are 42 databases sharing the +DATA diskgroup, then 42 differenct XLXS files will be created, each showing the individual contribution toward all IO seen in +DATA.
 
