@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
 
-# set the location as needed
+# copy these scripts to bin
+# adjust values as needed
+
 # top-level directory where the ASM Metrics files are located
+
 homeDir=/mnt/zips/tmp/presentations/asm-metrics
 # where the scripts are located
 binDir=/mnt/zips/tmp/presentations/asm-metrics
