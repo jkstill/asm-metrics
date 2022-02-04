@@ -194,6 +194,19 @@ These CSV files and XLS files are placed in directories with a suffix of '-chart
 
 Should you not want these, simply comment out the `asm-*clean*.sh` lines in `run-std.sh`.
 
+### Pivot Disk Metrics
+
+Using the `disk-pivot.pl` script, transform this layout:
+
+   timestamp diskname  metric1 metric2 metric3
+
+To this layout:
+
+   timestamp disk1 disk2 disk3 ...
+   metric
+
+The default metric is avg_wrt_time, but it can be any metric, just modify the code a bit as needed.
+
 
 ## Charting Data
 
@@ -217,6 +230,8 @@ This script is configured to process all the csv files in a single directory.
 The input is taken from the `diskgroup-breakout` directory created in the previous step.
 
 The output is Excel files, written to the `xlsx-by-diskgroup` directory.
+
+
 
 
 ## Running all scripts
