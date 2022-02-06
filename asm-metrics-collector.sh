@@ -11,15 +11,15 @@
 # approximately 24 hours per collection
 # with approximately a 0.45 second overhead we can get 4233 iterations per day at 20 second intervals
 
-ASM_NAME='+ASM1'
+ASM_NAME=$(grep ^+ASM /etc/oratab | cut -d: -f1)
 ASM_METRICS_HOME=$HOME/asm-metrics
-DAYS_TO_COLLECT=10
-INTERVAL_SECONDS=19
-ITERATIONS_PER_DAY=4223
+DAYS_TO_COLLECT=1
+INTERVAL_SECONDS=58
+ITERATIONS_PER_DAY=1440
 
-cd "$ASM_METRICS_HOME" || {
+cd ~/asm-metrics || {
 	echo
-	echo Failed to CD to "$ASM_METRICS_HOME"
+	echo Failed to CD to $"ASM_METRICS_HOME"
 	echo 
 	exit 1
 }
@@ -29,6 +29,23 @@ mkdir -p logs
 
 . /usr/local/bin/oraenv <<< $ASM_NAME
 
+# get the disk info
+
+declare timestamp=$(date +%Y%m%d-%H%M%S)
+
+diskInfoFile=logs/asm-disk-info-${timestamp}.psv
+diskSchedulerInfoFile=logs/asm-disk-scheduler-info-${timestamp}.log
+
+
+sqlplus -L -S / as sysasm <<-EOF > $diskInfoFile
+
+	@@asm-disk-info.sql
+	exit
+
+EOF
+
+./asm-disk-queue-info.sh $diskInfoFile > $diskSchedulerInfoFile
+
 
 for day in $(seq 1 $DAYS_TO_COLLECT)
 do
@@ -37,7 +54,7 @@ do
 
 	$ORACLE_HOME/perl/bin/perl ./asm-metrics-collector.pl --interval "$INTERVAL_SECONDS" --iterations "$ITERATIONS_PER_DAY" \
 		--opt-cols ALL-COLUMNS \
-		> logs/asm-data-$(date +%Y%m%d-%H%M%S).csv
+		> $diskInfoFile
 
 done
 
