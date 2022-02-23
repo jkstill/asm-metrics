@@ -49,6 +49,12 @@ Perl script used to look for negative values in raw CSV files.
 Used for some debugging.
 This script can be used to look for any value with minor adjustment
 
+### asm-time-histogram.sh
+
+Create a histogram of ASM read or write time metrics.
+
+`asm-time-histogram.sh -h`
+
 ### verify.sh
 bash script used for verifying aggregates during development
 
