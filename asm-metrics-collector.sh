@@ -54,7 +54,7 @@ do
 
 	$ORACLE_HOME/perl/bin/perl ./asm-metrics-collector.pl --interval "$INTERVAL_SECONDS" --iterations "$ITERATIONS_PER_DAY" \
 		--opt-cols ALL-COLUMNS \
-		> $diskInfoFile
+		> logs/asm-data-$(date +%Y%m%d-%H%M%S).csv
 
 done
 
