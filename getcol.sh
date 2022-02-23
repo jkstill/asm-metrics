@@ -19,7 +19,7 @@ help () {
  -f filename - use quotes if there are spaces in the file name
  -c column name - use quotes if there are spaces in the column name
  -g get the file header, display and exit script
- -s show column header 
+ -s show column header in output
  -h help
 
 EOF
@@ -39,7 +39,14 @@ do
 	esac
 done
 
+# if process substitution is used, this script returns incorrect results
+# that is because process substitution is a pipe
+# the file is read twice, which does not work properly without a real file
+# eg.  -f <(grep . somefile)
+
 [[ -r $csvFile ]] || { echo "cannot open $csvFile"; exit 1; }
+readlink $csvFile | cut -f1 -d: | grep --silent '^pipe' && { echo "$0 does not work with a pipe"; exit 1; }
+
 [[ -z $columnName ]] && { echo "columnName is empty"; exit 2; }
 
 declare header=$(head -1 $csvFile)
