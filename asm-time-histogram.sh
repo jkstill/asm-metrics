@@ -145,9 +145,6 @@ grep -E "(^DISPLAYTIME|,$diskGroup,)" $asmMetricsFile | grep -v '^0$'  > $csvTem
 #ROWCOUNT=$(getcol.sh -c $metricName -f <( grep -E "(^DISPLAYTIME|,$diskGroup+,)" $asmMetricsFile) | grep -v '^0$' | wc -l)
 ROWCOUNT=$(getcol.sh -c $metricName -f $csvTempFile | wc -l)
 
-getcol.sh -c $metricName -f  $csvTempFile > x
-#grep -E "(^DISPLAYTIME|,$diskGroup+,)" $asmMetricsFile > y
-
 export ROWCOUNT
 
 [[ $verbose -ne 0 ]] && {
@@ -162,7 +159,7 @@ export ROWCOUNT
 
 #exit
 
-./getcol.sh -c $metricName -f $csvTempFile \
+getcol.sh -c $metricName -f $csvTempFile \
 	| grep -v '^0$'\
 	| perl -p -e '$_ *= 1000; $_=int($_); $_ .= qq{\n}' \
 	| sort -nr | uniq -c \
