@@ -143,7 +143,8 @@ done
 grep -E "(^DISPLAYTIME|,$diskGroup,)" $asmMetricsFile | grep -v '^0$'  > $csvTempFile
 
 #ROWCOUNT=$(getcol.sh -c $metricName -f <( grep -E "(^DISPLAYTIME|,$diskGroup+,)" $asmMetricsFile) | grep -v '^0$' | wc -l)
-ROWCOUNT=$(getcol.sh -c $metricName -f $csvTempFile | wc -l)
+# exclude times of 0 as there was no read or write
+ROWCOUNT=$(getcol.sh -c $metricName -f $csvTempFile | grep -v '^0$' | wc -l)
 
 export ROWCOUNT
 
