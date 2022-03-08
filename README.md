@@ -55,6 +55,12 @@ Create a histogram of ASM read or write time metrics.
 
 `asm-time-histogram.sh -h`
 
+###  get-disk-times.sh
+
+This script calculates avg read/write times per diskgroup.
+
+Adjust values in the script at as needed
+
 ### verify.sh
 bash script used for verifying aggregates during development
 
