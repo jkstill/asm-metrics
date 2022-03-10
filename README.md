@@ -55,6 +55,39 @@ Create a histogram of ASM read or write time metrics.
 
 `asm-time-histogram.sh -h`
 
+### disk-time-histogram.pl
+
+This script will normalize disk read or write times into buckets of 5ms and count them.
+
+The output can be sent to `dynachart.pl` for charting.
+
+### disk-time-histogram.sh
+
+This script calls `disk-time-histogram.pl` for a series of diskgroups and read/write times.
+
+The output is sent to `dynachart.pl` and Excel spreadsheets with scatter plots created.
+
+The output is also suitable for histograms.
+
+### disk-group-by-timestamp.pl
+
+This script reads STDIN, expecting a timestamp, disk number and read or write tim.
+
+Rows are then arranged into columns:
+
+```text
+timestamp,disk 1, disk 2,...
+2022-03-09 15:00:00, 0.001, 0.025,...
+```
+
+ie.
+
+Get disktimes per disk for instance 1, the DATA diskgroup:
+
+```text
+$ grep -ahE 'orcl01,orcl,.*,DATA,' <(tail -q -n+2 logs/asm-*.csv)  | cut -d, -f1,7,12 | ./disk-group-by-timestamp.pl > db-disk-breakout/db007-data001-readtim.csv
+```
+
 ###  get-disk-times.sh
 
 This script calculates avg read/write times per diskgroup.
