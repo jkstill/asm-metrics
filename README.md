@@ -373,3 +373,56 @@ These scripts can be used to create charts for each database and diskgroup pairi
 
 For instance, if there are 42 databases sharing the +DATA diskgroup, then 42 differenct XLXS files will be created, each showing the individual contribution toward all IO seen in +DATA.
 
+## Utilities
+
+Various utility scripts
+
+### get-slow-writes-hist.pl
+
+This script came about as a result of investigating slow writes on a diskgroup.
+
+Sometimes the avg write time would be 3 seconds, and only for slow writes.
+
+This script can be used to show those writes, and the preceding 5 lines of data for that disk.
+
+```text
+
+       $  head -1 asm-data-20220110-065458.csv > asm-fra01-slow-writes.csv
+       $  grep -h ',dbp004,.*,FRA01,' asm-data*.csv |  ./get-slow-writes-hist.pl >> asm-fra01-slow-writes.csv
+```
+
+Sample the data
+
+```text
+       $  cut -d, -f1,7,8,14 asm-fra01-slow-writes.csv | head -30
+       DISPLAYTIME,DISK_NUMBER,DISKGROUP_NAME,AVG_WRITE_TIME
+       2022-01-09 07:47:46,1,FRA01,0.151036499999464
+       2022-01-09 07:48:45,1,FRA01,0.00115562500104716
+       2022-01-09 07:49:44,1,FRA01,0.00105226829274637
+       2022-01-09 07:50:43,1,FRA01,0.00102099999882436
+       2022-01-09 07:51:42,1,FRA01,3.00137900000846
+       2022-01-09 07:50:43,5,FRA01,0.00106599999708124
+       2022-01-09 07:51:42,5,FRA01,0
+       2022-01-09 07:52:41,5,FRA01,0.429843142857343
+       2022-01-09 07:53:40,5,FRA01,0.0010293465345985
+       2022-01-09 07:54:39,5,FRA01,0.354050882353262
+       2022-01-09 07:55:38,5,FRA01,3.00099899999623
+       2022-01-09 07:50:43,6,FRA01,0.00122180000180379
+       2022-01-09 07:51:42,6,FRA01,0
+       2022-01-09 07:52:41,6,FRA01,0
+       2022-01-09 07:53:40,6,FRA01,0.00101174999984393
+       2022-01-09 07:54:39,6,FRA01,0.143833952380754
+       2022-01-09 07:55:38,6,FRA01,3.00096099999791
+       2022-01-09 07:50:43,7,FRA01,1.50122099999862
+       2022-01-09 07:51:42,7,FRA01,0
+       2022-01-09 07:52:41,7,FRA01,0.00101109090874988
+       2022-01-09 07:53:40,7,FRA01,0.00100167692309277
+       2022-01-09 07:54:39,7,FRA01,0.00100507258062979
+       2022-01-09 07:55:38,7,FRA01,3.00107300000673
+       2022-01-09 07:51:42,1,FRA01,3.00137900000846
+       2022-01-09 07:52:41,1,FRA01,0.0011576666632512
+       2022-01-09 07:53:40,1,FRA01,0.000990931404072498
+       2022-01-09 07:54:39,1,FRA01,0.023830571065986
+       2022-01-09 07:55:38,1,FRA01,0.00108950000139885
+```
+
