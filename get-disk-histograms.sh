@@ -17,6 +17,7 @@ banner () {
 readarray csvFiles  < <(ls -1 logs/asm-data*.csv 2>/dev/null)
 hdrFile=${csvFiles[0]}
 
+maxMilliseconds=1000000
 histogramScale=20
 
 #for csvFile in ${csvFiles[@]}
@@ -30,12 +31,12 @@ histogramScale=20
 
 for dg in $(getcol.sh -c DISKGROUP_NAME -f $hdrFile   | sort -u)
 do
-	for diskNumber in  $(cut -d, -f7,8 $hdrFile | grep ",$dg" | cut -d, -f1 | sort -u -n)
+	for ioType in reads writes
 	do
-		for ioType in reads writes
+		for diskNumber in  $(cut -d, -f7,8 $hdrFile | grep ",$dg" | cut -d, -f1 | sort -u -n)
 		do
 			banner "DiskGroup $dg:$diskNumber - $ioType"
-			./asm-time-histogram.sh -d $dg -n $diskNumber -s $histogramScale  -t $ioType -f <( head -1 $hdrFile; tail -q -n+2 ${csvFiles[@]} )
+			./asm-time-histogram.sh -d $dg -n $diskNumber -s $histogramScale -m $maxMilliseconds  -t $ioType -f <( head -1 $hdrFile; tail -q -n+2 ${csvFiles[@]} )
 		done
 	done
 done

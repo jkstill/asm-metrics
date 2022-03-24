@@ -24,6 +24,7 @@ asm-time-histogram.sh
  -f ASM metric file
  -d diskgroup - defaults to all diskgroups
  -n disknumber - defaults to all disks
+ -m max milliseconds to report on - defaults to 1000000
  -s scaling factor for displaying histogram
     defaults to 50
  -v verbose
@@ -122,16 +123,18 @@ declare verbose=0
 declare scalingFactor=50; export scalingFactor
 declare diskGroup='.+'
 declare diskNumber='.+'
+declare maxMilliseconds=1000000; export maxMilliseconds
 
 # lowercase the arg for -t
 typeset -l arg
 
-while getopts vzhs:t:f:d:n: arg
+while getopts vzhs:t:f:d:n:m: arg
 do
 	case $arg in
 		hz) usage;exit 0;;
 		d) diskGroup=$OPTARG;;
 		n) diskNumber=$OPTARG;;
+		m) maxMilliseconds=$OPTARG;;
 		f) asmMetricsFile=$OPTARG;;
 		s) scalingFactor=$OPTARG;;
 		t) [[ $OPTARG == 'writes' ]] && { metricName='AVG_WRITE_TIME'; } ;;
@@ -167,7 +170,7 @@ getcol.sh -c $metricName -f $csvTempFile \
 	| grep -v '^0$'\
 	| perl -p -e '$_ *= 1000; $_=int($_); $_ .= qq{\n}' \
 	| sort -nr | uniq -c \
-	| perl -wn -e 'chomp;s/^\s+//; ($count,$ms)=split(/\s+/);printf(qq{%5d %7d %3.2f%% %s\n}, $ms, $count, $count / $ENV{ROWCOUNT} * 100, q{*} x ( $count /  $ENV{scalingFactor}))'
+	| perl -wn -e 'chomp;s/^\s+//; ($count,$ms)=split(/\s+/);printf(qq{%5d %7d %3.2f%% %s\n}, $ms, $count, $count / $ENV{ROWCOUNT} * 100, q{*} x ( $count /  $ENV{scalingFactor})) if $ms <= $ENV{maxMilliseconds}'
 
 cleanup
 

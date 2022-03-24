@@ -16,6 +16,7 @@ banner () {
 readarray csvFiles  < <(ls -1 logs/asm-data*.csv 2>/dev/null)
 hdrFile=${csvFiles[0]}
 
+maxMilliseconds=1000000
 histogramScale=100
 
 [ -z $hdrFile ] && { echo "No asm metrics files found"; exit 1; }
@@ -25,7 +26,7 @@ do
 	for ioType in reads writes
 	do
 		banner "DiskGroup $dg - $ioType"
-		./asm-time-histogram.sh -d $dg -s $histogramScale  -t $ioType -f <( head -1 $hdrFile; tail -q -n+2 logs/asm-data*.csv)
+		./asm-time-histogram.sh -d $dg -s $histogramScale  -m $maxMilliseconds  -t $ioType -f <( head -1 $hdrFile; tail -q -n+2 logs/asm-data*.csv)
 	done
 done
 
