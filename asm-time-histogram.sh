@@ -23,6 +23,7 @@ asm-time-histogram.sh
     default is reads
  -f ASM metric file
  -d diskgroup - defaults to all diskgroups
+ -n disknumber - defaults to all disks
  -s scaling factor for displaying histogram
     defaults to 50
  -v verbose
@@ -120,15 +121,17 @@ declare asmMetricsFile
 declare verbose=0
 declare scalingFactor=50; export scalingFactor
 declare diskGroup='.+'
+declare diskNumber='.+'
 
 # lowercase the arg for -t
 typeset -l arg
 
-while getopts vzhs:t:f:d: arg
+while getopts vzhs:t:f:d:n: arg
 do
 	case $arg in
 		hz) usage;exit 0;;
 		d) diskGroup=$OPTARG;;
+		n) diskNumber=$OPTARG;;
 		f) asmMetricsFile=$OPTARG;;
 		s) scalingFactor=$OPTARG;;
 		t) [[ $OPTARG == 'writes' ]] && { metricName='AVG_WRITE_TIME'; } ;;
@@ -140,7 +143,7 @@ done
 [[ -r $asmMetricsFile ]] || { echo "cannot open $asmMetricsFile"; exit 2; }
 
 # do not know why there may be a line of '^0$'
-grep -E "(^DISPLAYTIME|,$diskGroup,)" $asmMetricsFile | grep -v '^0$'  > $csvTempFile
+grep -E "(^DISPLAYTIME|,$diskNumber,$diskGroup,)" $asmMetricsFile | grep -v '^0$'  > $csvTempFile
 
 #ROWCOUNT=$(getcol.sh -c $metricName -f <( grep -E "(^DISPLAYTIME|,$diskGroup+,)" $asmMetricsFile) | grep -v '^0$' | wc -l)
 # exclude times of 0 as there was no read or write

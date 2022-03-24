@@ -55,6 +55,14 @@ Create a histogram of ASM read or write time metrics.
 
 `asm-time-histogram.sh -h`
 
+### get-asm-histograms.sh
+
+Calls `asm-time-histogram.sh` to create histograms of reads/writes for all disk groups
+
+### get-disk-histograms.sh
+
+Calls `asm-time-histogram.sh` to create histograms of reads/writes for all disks per each disk group
+
 ### disk-time-histogram.pl
 
 This script will normalize disk read or write times into buckets of 5ms and count them.
