@@ -385,6 +385,54 @@ For instance, if there are 42 databases sharing the +DATA diskgroup, then 42 dif
 
 Various utility scripts
 
+### get-iops-disk-breakout.pl
+
+Called by `get-iops-disk-breakout.sh`
+
+### get-iops-disk-breakout.sh
+
+Use this script to get IOPS from CSV files in the disk-breakout directories.
+See `get-iops.sh` for a similar example.
+
+### get-iops.pl
+
+Called by `get-iops.sh`
+
+### get-iops.sh
+
+This script can be used to get IOPS values from raw asm-metrics CSV files.
+
+```text
+$ ./get-iops.sh
+cutFields: 1,3,8,9,10,15,16
+###################################
+## data set: set-01
+###################################
+
+dg PLXPRD01_DATA01      | reads:    301700269 | writes:     97035661 | time:   848760 | iops:       469
+dg PLXPRD01_FRA01       | reads:        13962 | writes:      3098266 | time:   848760 | iops:         3
+dg PLXPRD01_REDO01      | reads:     63116190 | writes:    101632161 | time:   848760 | iops:       194
+dg PLXPRD01_REDO02      | reads:       315466 | writes:    101632172 | time:   848760 | iops:       120
+dg PLXPRD02_DATA01      | reads:    280786418 | writes:     90006359 | time:   784213 | iops:       472
+dg PLXPRD02_FRA01       | reads:        14458 | writes:      3020210 | time:   784213 | iops:         3
+dg PLXPRD02_REDO01      | reads:    156300246 | writes:    101207900 | time:   784213 | iops:       328
+dg PLXPRD02_REDO02      | reads:       285921 | writes:    101207912 | time:   784213 | iops:       129
+dg PLXPRD03_DATA01      | reads:    121709752 | writes:     95920821 | time:   843191 | iops:       258
+dg PLXPRD03_FRA01       | reads:        16032 | writes:      3263285 | time:   843191 | iops:         3
+dg PLXPRD03_REDO01      | reads:     31235407 | writes:    108167077 | time:   843191 | iops:       165
+dg PLXPRD03_REDO02      | reads:       215444 | writes:    108167121 | time:   843191 | iops:       128
+
+###################################
+## data set: set-03
+###################################
+
+dg ACFS                 | reads:            0 | writes:            0 | time:   861641 | iops:         0
+dg DATA                 | reads:   8122420470 | writes:   2491225862 | time:   861641 | iops:     12317
+dg FRA                  | reads:     90602141 | writes:     75719696 | time:   861641 | iops:       193
+dg GRID                 | reads:     10783051 | writes:     11018609 | time:   861641 | iops:        25
+dg REDO                 | reads:    358005076 | writes:    848432182 | time:   861641 | iops:      1400
+```
+
 ### get-slow-writes-hist.pl
 
 This script came about as a result of investigating slow writes on a diskgroup.
