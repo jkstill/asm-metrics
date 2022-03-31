@@ -30,14 +30,25 @@ do
 
 	echo "running: asm-metrics-aggregator-loop.sh"
 	$binDir/asm-metrics-aggregator-loop.sh
+
 	echo "running: asm-metrics-synth.sh"
 	$binDir/asm-metrics-synth.sh
+
 	echo "running: asm-diskgroup-breakout.sh"
 	$binDir/asm-diskgroup-breakout.sh
+
+	echo "running: asm-metrics-add-iops.sh"
+	$binDir/asm-metrics-add-iops.sh
+
 	echo "running: asm-metrics-cleaned.sh"
 	$binDir/asm-metrics-cleaned.sh
+
+	echo "running: asm-metrics-chart-diskgroup-iops.sh"
+	$binDir/asm-metrics-chart-diskgroup-iops.sh
+
 	echo "running: asm-metrics-chart-synth.sh"
 	$binDir/asm-metrics-chart-synth.sh
+
 	echo "running: asm-metrics-chart-cleaned.sh"
 	$binDir/asm-metrics-chart-cleaned.sh
 	
