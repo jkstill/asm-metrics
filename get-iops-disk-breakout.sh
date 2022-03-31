@@ -35,17 +35,10 @@ echo cutFields: $cutFields
 echo
 
 #for dataSet in set-0{1,3}
-for dataSet in asm-metrics-set-01 asm-metrics-set-02 
+for csvFile in diskgroup-breakout/*.csv
 do
-	echo "###################################"
-	echo "## data set: $dataSet"
-	echo "###################################"
-
 	#cut -d, -f$cutFields <( tail -q -n+2 $dataSet/asm*.csv | head -20000 -q ) | ./get-iops-disk-breakout.pl
-	cut -d, -f$cutFields <( tail -q -n+2 $dataSet/diskgroup-breakout/*.csv ) | ./get-iops-disk-breakout.pl
-
-	echo
-
+	cut -d, -f$cutFields <( tail -q -n+2 $csvFile ) | ./get-iops-disk-breakout.pl
 done
 
 

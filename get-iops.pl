@@ -36,25 +36,24 @@ bytes written: $bytesWritten
 
 }
 
-print "\n";
+#$Data::Dumper::Varname = 'elapsedTimes';
+#print Dumper(\%elapsedTimes);
+#print "\n";
+#exit;
 
 foreach my $dgName ( sort keys %iops ) {
 
+	#print "dg: $dgName\n";
+
 	my $totalElapsedTime=0;
-	foreach my $dgElapsedKey ( keys %elapsedTimes ) {
-		my %dgElapsedTimes = %{$elapsedTimes{$dgElapsedKey}};
-		
-		foreach my $displayTime ( keys %dgElapsedTimes ) {
-			eval {
-				use warnings 'FATAL';
-				$totalElapsedTime += $dgElapsedTimes{$displayTime};
-			};
-			if ($@) {
-				warn "ERROR!\n";
-				warn "$@\n";
-				warn 'DATA:  $dgElapsedTimes{$displayTime}:  ' .  $dgElapsedTimes{$displayTime} . "\n";
-			}
-		}
+
+	my %dgElapsedTimes = %{$elapsedTimes{$dgName}};
+			
+	# sorted output is nice for debugging
+	#foreach my $displayTime ( sort { $a cmp $b } keys %dgElapsedTimes ) {
+	foreach my $displayTime ( keys %dgElapsedTimes ) {
+		$totalElapsedTime += $dgElapsedTimes{$displayTime};
+		#print "  $displayTime  $totalElapsedTime\n";
 	}
 
 	#print "$dgName: totalElapsedTime: $totalElapsedTime\n";
@@ -66,7 +65,7 @@ foreach my $dgName ( sort keys %iops ) {
 
 	my $iops = ($tmpIops{reads} +  $tmpIops{writes})  / $totalElapsedTime;
 
-	printf("dg %15s | reads: %12d | writes: %12d | time: %8d | iops: %9d\n",$dgName, $tmpIops{reads}, $tmpIops{writes}, $totalElapsedTime,  $iops);
+	printf("dg %-20s | reads: %12d | writes: %12d | time: %8d | iops: %9d\n",$dgName, $tmpIops{reads}, $tmpIops{writes}, $totalElapsedTime,  $iops);
 
 }
 

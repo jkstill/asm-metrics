@@ -37,17 +37,13 @@ bytes written: $bytesWritten
 
 }
 
-print "\n";
-
+#print "\n";
 #$Data::Dumper::Varname = 'iops';
 #print Dumper(\%iops);
-
 #$Data::Dumper::Varname = 'elapsedTimes';
 #print Dumper(\%elapsedTimes);
-	
 #exit;
-
-print "\n";
+#print "\n";
 
 foreach my $dgName ( sort keys %iops ) {
 

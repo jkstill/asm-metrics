@@ -64,18 +64,10 @@ cutFields=${cutFields:1}
 
 echo cutFields: $cutFields
 
-for dataSet in asm-metrics-set-01 asm-metrics-set-02
-do
+#cut -d, -f$cutFields <( tail -q -n+2 $dataSet/asm*.csv | head -20000 -q ) | ./get-iops.pl 
+cut -d, -f$cutFields <( tail -q -n+2 logs/asm*.csv ) | ./get-iops.pl 
 
-	echo "###################################"
-	echo "## data set: $dataSet"
-	echo "###################################"
+echo
 
-	#cut -d, -f$cutFields <( tail -q -n+2 $dataSet/asm*.csv | head -20000 -q ) | ./get-iops.pl 
-	cut -d, -f$cutFields <( tail -q -n+2 $dataSet/asm*.csv ) | ./get-iops.pl 
-
-	echo
-
-done
 
 
