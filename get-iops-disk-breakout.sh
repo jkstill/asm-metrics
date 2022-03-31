@@ -2,7 +2,7 @@
 
 # for use with asm-metrics CSV files created by the diskgroup-breakout script
 
-#$  getcol.sh -f set-03/asm-data-20200801-084753.csv  -g| awk -F: '{ printf("[%s]=%d\n", $2,$1) }' | tr -d ' '
+#$  getcol.sh -f diskgroup-breakout/FRA.csv -g | awk -F: '{ printf("[%s]=%d\n", $2,$1) }' | tr -d ' '
 
 declare -A allFields=(
 	[DATE]=1
@@ -35,7 +35,8 @@ echo cutFields: $cutFields
 echo
 
 #for dataSet in set-0{1,3}
-for csvFile in diskgroup-breakout/*.csv
+# diskgroup names are upper case
+for csvFile in diskgroup-breakout/[A-Z]*.csv
 do
 	#cut -d, -f$cutFields <( tail -q -n+2 $dataSet/asm*.csv | head -20000 -q ) | ./get-iops-disk-breakout.pl
 	cut -d, -f$cutFields <( tail -q -n+2 $csvFile ) | ./get-iops-disk-breakout.pl

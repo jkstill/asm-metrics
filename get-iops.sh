@@ -65,7 +65,7 @@ cutFields=${cutFields:1}
 echo cutFields: $cutFields
 
 #cut -d, -f$cutFields <( tail -q -n+2 $dataSet/asm*.csv | head -20000 -q ) | ./get-iops.pl 
-cut -d, -f$cutFields <( tail -q -n+2 logs/asm*.csv ) | ./get-iops.pl 
+cut -d, -f$cutFields <( tail -q -n+2 logs/asm-data-*.csv ) | ./get-iops.pl 
 
 echo
 

@@ -3,6 +3,7 @@
 # copy these scripts to binDir
 # adjust values as needed
 
+# full path required
 homeDir=/mnt/zips/tmp/health-check-data/servers
 binDir=/mnt/zips/tmp/health-check-data/bin
 

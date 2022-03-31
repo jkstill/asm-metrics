@@ -5,7 +5,7 @@ pwd
 
 mkdir -p xlsx-by-diskgroup-cleaned
 
-for infile in cleaned/*.csv
+for infile in cleaned/[A-Z]*.csv
 do
 
 	diskgroup=$(echo $infile | cut -f2 -d/ | cut -f1 -d\.)

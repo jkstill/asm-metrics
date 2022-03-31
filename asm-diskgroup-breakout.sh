@@ -5,7 +5,7 @@ mkdir -p diskgroup-breakout
 
 # get diskgroup names
 
-testfile=$(ls -1 synth/*.csv | head -1)
+testfile=$(ls -1 synth/asm-data-*.csv | head -1)
 
 declare -A outfiles;
 
@@ -19,7 +19,7 @@ do
 	 head -1 $testfile > ${outfiles[$dg]}
 done
 
-for infile in synth/*.csv
+for infile in synth/asm-data-*.csv
 do
 	echo working on $infile
 

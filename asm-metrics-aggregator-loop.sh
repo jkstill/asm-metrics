@@ -2,7 +2,7 @@
 
 mkdir -p output 
 
-for INPUT_DATAFILE in logs/*.csv
+for INPUT_DATAFILE in logs/asm-data*.csv
 do
 
 	#datestamp=$(echo $INPUT_DATAFILE|cut -d- -f3)

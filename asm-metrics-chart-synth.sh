@@ -2,7 +2,7 @@
 
 mkdir -p xlsx-by-diskgroup
 
-for infile in diskgroup-breakout/*.csv
+for infile in diskgroup-breakout/[A-Z]*.csv
 do
 
 	diskgroup=$(echo $infile | cut -f2 -d/ | cut -f1 -d\.)

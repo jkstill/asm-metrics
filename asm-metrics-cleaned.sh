@@ -8,7 +8,7 @@
 
 mkdir -p cleaned
 
-for infile in diskgroup-breakout/*.csv
+for infile in diskgroup-breakout/[A-Z]*.csv
 do
 	outfile=$(echo $infile | sed -e 's/diskgroup-breakout/cleaned/' -e 's/\.csv/-cleaned\.csv/');
 	echo infile: $infile
