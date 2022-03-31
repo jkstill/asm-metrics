@@ -1,4 +1,6 @@
 
+
+
 ASM Metrics Collector
 =====================
 
@@ -25,6 +27,9 @@ Collect ASM metrics for further processing.
 ### asm-metrics-collector.sh
 bash driver example 
 
+## run-std-asm.sh
+ Calls all of the following scripts in the correct order.
+ 
 ### asm-metrics-aggregator.pl
 This script aggregates metrics based on one column from raw metrics data.
 eg. Aggregate IO metrics per diskgroup
@@ -50,7 +55,6 @@ Used for some debugging.
 This script can be used to look for any value with minor adjustment
 
 ### asm-time-histogram.sh
-
 Create a histogram of ASM read or write time metrics.
 
 `asm-time-histogram.sh -h`
@@ -60,17 +64,14 @@ Create a histogram of ASM read or write time metrics.
 Calls `asm-time-histogram.sh` to create histograms of reads/writes for all disk groups
 
 ### get-disk-histograms.sh
-
 Calls `asm-time-histogram.sh` to create histograms of reads/writes for all disks per each disk group
 
 ### disk-time-histogram.pl
-
 This script will normalize disk read or write times into buckets of 5ms and count them.
 
 The output can be sent to `dynachart.pl` for charting.
 
 ### disk-time-histogram.sh
-
 This script calls `disk-time-histogram.pl` for a series of diskgroups and read/write times.
 
 The output is sent to `dynachart.pl` and Excel spreadsheets with scatter plots created.
@@ -78,7 +79,6 @@ The output is sent to `dynachart.pl` and Excel spreadsheets with scatter plots c
 The output is also suitable for histograms.
 
 ### disk-group-by-timestamp.pl
-
 This script reads STDIN, expecting a timestamp, disk number and read or write tim.
 
 Rows are then arranged into columns:
@@ -97,7 +97,6 @@ $ grep -ahE 'orcl01,orcl,.*,DATA,' <(tail -q -n+2 logs/asm-*.csv)  | cut -d, -f1
 ```
 
 ###  get-disk-times.sh
-
 This script calculates avg read/write times per diskgroup.
 
 Adjust values in the script at as needed
@@ -126,7 +125,6 @@ Three new corrected files will be created:
   asm-metrics-3-corrected.csv
 
 # Processing ASM Metrics Data
-
 Data is raw.  Metrics are per diskgroup and disk every 20 seconds.
 
 So, one line for each disk.
@@ -136,7 +134,6 @@ For analysis and charting, the data is being aggregated.
 Some detail is lost, but this level of detail  is not necessary for charting trends.
 
 ## Aggregate
-
 Make a copy of `asm-metrics-aggregator.sh`, and modifify the default file names.
 
 Or to run against an entire directory of files , use `asm-metrics-aggregator-loop.sh` instead.
@@ -180,9 +177,7 @@ DISPLAYTIME,ELAPSEDTIME,DISKGROUP_NAME,READS,WRITES,READ_TIME,WRITE_TIME,BYTES_R
 Usually `asm-metrics-aggregator-loop.sh` script is used, which reads files from the `logs` directory, and writes to the `output` directory.
 
 ## Synthesize Averages
-
 So as to avoid doing this step in Excel, Google Sheets, or other charting tools, the averages can be calcualted for average read and write times, and written to a new file.
-
 
 Some of the scripts that do this:
 
@@ -225,16 +220,13 @@ There are 2 changes made to the `synth.csv` file.
 
 
 ## Breaking out diskgroups
-
 To further simplify charting, the data can be split into diskgroup based files.
 
 The `asm-diskgroup-breakout.sh` is a fairly simple Bash script that creates diskgroup based files, taking its input from the `synth` directory of the previous step.
 
 New files are written to the `diskgroup-breakout` directory.
 
-
 ## Remove Outliers and Spikes
-
 Sometimes there may be outliers and very large spikes. These tend to skew the data and make the charts hard to read.
 
 In extreme cases a chart may consist of some spike connected by a flat line.
@@ -245,10 +237,9 @@ The data for each file is piped through two Python scripts, `outlier-remove.py` 
 
 These CSV files and XLS files are placed in directories with a suffix of '-chart'.
 
-Should you not want these, simply comment out the `asm-*clean*.sh` lines in `run-std.sh`.
+Should you not want these, simply comment out the `asm-*clean*.sh` lines in `run-std-asm.sh`.
 
 ### Pivot Disk Metrics
-
 Using the `disk-pivot.pl` script, transform this layout:
 
    timestamp diskname  metric1 metric2 metric3
@@ -262,7 +253,6 @@ The default metric is avg_wrt_time, but it can be any metric, just modify the co
 
 
 ## Charting Data
-
 The data can now be charted using `asm-metrics-chart.pl`.
 
 There are already a couple of shell driver scripts for this task:
@@ -271,25 +261,19 @@ There are already a couple of shell driver scripts for this task:
 - asm-metrics-chart-synth.sh
 
 ### asm-metrics-chart.sh
-
 This script is hardcoded to create a single Excel file from an ASM Metrics file.
 
 It can be used as the basis for a script that processes an entire directory of files.
 
 ### asm-metrics-chart-synth.sh
-
 This script is configured to process all the csv files in a single directory.
 
 The input is taken from the `diskgroup-breakout` directory created in the previous step.
 
 The output is Excel files, written to the `xlsx-by-diskgroup` directory.
 
-
-
-
 ## Running all scripts
-
-The commands to process all data were put into a the Bash script, `run-std.sh`.
+The commands to process all data were put into a the Bash script, `run-std-asm.sh`.
 
 ```shell
 #!/usr/bin/env bash
@@ -301,7 +285,7 @@ The commands to process all data were put into a the Bash script, `run-std.sh`.
 ```
 
 ```text
-$  time ./run-std.sh
+$  time ./run-std-asm.sh
 working on output/asm-data-20200731-085514.csv
 working on output/asm-data-20200801-084753.csv
 working on output/asm-data-20200802-083738.csv
@@ -333,8 +317,6 @@ sys     0m23.900s
 ```
 
 ## Running all scripts for a collection of files per RAC system 
-
-
 ASM Metrics files are to be organized like this:
 
 ```text
@@ -353,11 +335,9 @@ cluster-02
 
 Then:
 
-`./runall-cluster.s`
-
+`./runall-cluster.sh`
 
 ## Granularity of Data
-
 The data is collected at the ASM device level.
 
 This means that data can be sliced and diced many ways.
@@ -382,24 +362,33 @@ These scripts can be used to create charts for each database and diskgroup pairi
 For instance, if there are 42 databases sharing the +DATA diskgroup, then 42 differenct XLXS files will be created, each showing the individual contribution toward all IO seen in +DATA.
 
 ## Utilities
-
 Various utility scripts
 
-### get-iops-disk-breakout.pl
+### asm-metrics-add-iops.pl
+  Used to derive IOPS info from the diskgroup-breakout CSV files
+  Called by `asm-metrics-add-iops.sh`
 
+### asm-metrics-add-iops.sh
+  Calls `asm-metrics-add-iops.pl`
+  Called `in run-std-asm.sh`
+
+### asm-metrics-chart-diskgroup-iops.sh
+
+  Calls [dynachart.pl](https://github.com/jkstill/csv-tools/tree/master/dynachart) to create Excel files from the diskgroup-breakout-iops directory.
+
+  Scatter charts are created per CSV file, with the IOPS column on a secondary axis
+
+### get-iops-disk-breakout.pl
 Called by `get-iops-disk-breakout.sh`
 
 ### get-iops-disk-breakout.sh
-
 Use this script to get IOPS from CSV files in the disk-breakout directories.
 See `get-iops.sh` for a similar example.
 
 ### get-iops.pl
-
 Called by `get-iops.sh`
 
 ### get-iops.sh
-
 This script can be used to get IOPS values from raw asm-metrics CSV files.
 
 ```text
@@ -434,7 +423,6 @@ dg REDO                 | reads:    358005076 | writes:    848432182 | time:   8
 ```
 
 ### get-slow-writes-hist.pl
-
 This script came about as a result of investigating slow writes on a diskgroup.
 
 Sometimes the avg write time would be 3 seconds, and only for slow writes.

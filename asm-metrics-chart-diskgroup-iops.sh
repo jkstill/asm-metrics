@@ -11,20 +11,15 @@ do
 
 	echo working on $xlsxFile
 
-	#/mnt/zips/tmp/asm-metrics/metrics-bin/asm-metrics-chart.pl \
-		#--worksheet-col DATE \
-		#--date-time-sep \
-		#--spreadsheet-file $xlsxFile \
-		#--chart-cols IOPS IOPS_SZ_SEC \
-		#-- $infile
-
+	# https://github.com/jkstill/csv-tools/tree/master/dynachart
 	dynachart.pl \
 		--worksheet-col DATE \
 		--category-col TIME \
 		--spreadsheet-file $xlsxFile \
-		--chart-cols IOPS --chart-cols IOPS_SZ_SEC \
+		--chart-cols TIME --chart-cols IOPS --chart-cols IOPS_SZ_SEC \
+		--secondary-axis-col IOPS \
+		--chart-type scatter \
 		--combined-chart < $infile
-
 
 done
 
