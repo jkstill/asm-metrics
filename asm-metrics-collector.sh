@@ -13,8 +13,8 @@
 
 ASM_NAME=$(grep ^+ASM /etc/oratab | cut -d: -f1)
 ASM_METRICS_HOME=$HOME/asm-metrics
-DAYS_TO_COLLECT=1
-INTERVAL_SECONDS=58
+DAYS_TO_COLLECT=3
+INTERVAL_SECONDS=59
 ITERATIONS_PER_DAY=1440
 
 cd ~/asm-metrics || {
