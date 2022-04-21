@@ -16,6 +16,22 @@ export PATH=$HOME/oracle/health_check/asm-metrics:$binDir:$PATH
 eval "$(conda shell.bash hook)"
 conda activate base
 
+: << 'COMMENT'
+
+assumed directory structure
+
+-server01
+  -asm-metrics-data
+    -logs
+-server02
+  -asm-metrics-data
+    -logs
+...
+
+Adjust as necessary
+
+COMMENT
+
 for metricDir in server00?/asm-metrics_data
 do
 	echo "#########################################################"
