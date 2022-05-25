@@ -5,7 +5,7 @@ set -u
 # get a column by name from a CSV file
 # the CSV file must of course have a header line of column names
 
-declare csvDelimiter=','
+declare csvDelimiter=''
 declare columnName=''
 declare csvFile=''
 declare skipLineCount=2;
@@ -15,7 +15,7 @@ help () {
 
 	cat <<-EOF
 
- -d delimiter (single character)
+ -d delimiter (single character) - omit this option for TAB delimited
  -f filename - use quotes if there are spaces in the file name
  -c column name - use quotes if there are spaces in the column name
  -g get the file header, display and exit script
@@ -30,7 +30,7 @@ while getopts d:f:c:gsh arg
 do
 	case $arg in
 		h) help; exit 0;;
-		d) csvDelimiter=$OPTARG;;
+		d) csvDelimiter=" -d $OPTARG ";;
 		g) getHdrAndExit='Y'; columnName='dummy';; # dummy to bypass check further down for columname being empty
 		c) columnName=$OPTARG;;
 		s) skipLineCount=0;;
@@ -38,6 +38,8 @@ do
 		*) help; exit 1;;
 	esac
 done
+
+#echo "delimiter: $csvDelimiter"
 
 # if process substitution is used, this script returns incorrect results
 # that is because process substitution is a pipe
@@ -53,9 +55,15 @@ declare header=$(head -1 $csvFile)
 declare searchColName=''
 declare searchColNum=0
 
+#echo "$header" # if not quoted, the tabs are converted to spaces
+cutCmd="cut $csvDelimiter" 
+
+#echo "cutCmd: $cutCmd"
+
 for i in {1..255}
 do
-	declare currColName=$(echo $header | cut -f$i -d$csvDelimiter)
+	# $header MUST be quoted
+	declare currColName="$(echo "$header" | eval $cutCmd -f$i )"
 	if [[ -z $currColName ]]; then
 		if [[ $getHdrAndExit == 'Y' ]] ; then
 			exit 0;
@@ -79,5 +87,6 @@ done
 
 [[ -z $searchColName ]] && { echo "column $columnName not found"; exit 3; }
 
-tail -n+$skipLineCount <(cut -d$csvDelimiter -f$searchColNum $csvFile)
+#tail -n+$skipLineCount <(cut -d"$csvDelimiter" -f$searchColNum $csvFile)
+tail -n+$skipLineCount <(eval $cutCmd -f$searchColNum $csvFile)
 
