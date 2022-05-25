@@ -2,11 +2,11 @@
 
 set -u
 
-ASM_NAME=$(grep ^+ASM /etc/oratab | cut -d: -f1)
-ASM_METRICS_HOME=$HOME/asm-metrics
-DAYS_TO_COLLECT=1
-INTERVAL_SECONDS=58
-ITERATIONS_PER_DAY=1440
+# with default sort, +ASM[1-9] will appear before +ASM if both exist
+ASM_NAME=$(grep ^+ASM /etc/oratab | sort | head -1 |  cut -d: -f1)
+SCRIPT_DIR=$(dirname $0)
+cd $SCRIPT_DIR || { echo "could not cd to '$SCRIPT_DIR'"; exit 1; }
+ASM_METRICS_HOME=$(pwd)
 
 diskInfoFile="$1"
 
@@ -17,7 +17,7 @@ diskInfoFile="$1"
 	exit 1
 }
 
-cd ~/asm-metrics || {
+cd $ASM_METRICS_HOME || {
 	echo
 	echo Failed to CD to $"ASM_METRICS_HOME"
 	echo 

@@ -1,29 +1,27 @@
 #!/bin/bash
 
-# to get all data for all databases, run as the grid user, connecting to the ASM instance.
-
+# to get all data for all databases, run as the ASM owner (usually grid), connecting to the ASM instance.
 # as SYSASM is the default method
-# run as grid
-# assumes ~/asm-metrics
-
-#: << 'AS-SYSASM'
 
 # approximately 24 hours per collection
 # with approximately a 0.45 second overhead we can get 4233 iterations per day at 20 second intervals
 
-ASM_NAME=$(grep ^+ASM /etc/oratab | cut -d: -f1)
-ASM_METRICS_HOME=$HOME/asm-metrics
+# with default sort, +ASM[1-9] will appear before +ASM if both exist
+ASM_NAME=$(grep ^+ASM /etc/oratab | sort | head -1 |  cut -d: -f1)
+SCRIPT_DIR=$(dirname $0)
+cd $SCRIPT_DIR || { echo "could not cd to '$SCRIPT_DIR'"; exit 1; }
+ASM_METRICS_HOME=$(pwd)
+
 DAYS_TO_COLLECT=3
 INTERVAL_SECONDS=59
 ITERATIONS_PER_DAY=1440
 
-cd ~/asm-metrics || {
+cd $ASM_METRICS_HOME || {
 	echo
 	echo Failed to CD to $"ASM_METRICS_HOME"
 	echo 
 	exit 1
 }
-
 
 mkdir -p logs
 
