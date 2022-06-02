@@ -2,7 +2,7 @@
 
 # for use with asm-metrics CSV files created by the diskgroup-breakout script
 
-#$  getcol.sh -f diskgroup-breakout/FRA.csv -g | awk -F: '{ printf("[%s]=%d\n", $2,$1) }' | tr -d ' '
+#$  getcol.sh -d, -f diskgroup-breakout/FRA.csv -g | awk -F: '{ printf("[%s]=%d\n", $2,$1) }' | tr -d ' '
 
 declare -A allFields=(
 	[DATE]=1

@@ -2,7 +2,7 @@
 
 # for use on raw asm-metrics CSV files
 
-#$  getcol.sh -f set-03/asm-data-20200801-084753.csv  -g| awk -F: '{ printf("[%s]=%d\n", $2,$1) }' | tr -d ' '
+#$  getcol.sh -d, -f set-03/asm-data-20200801-084753.csv  -g| awk -F: '{ printf("[%s]=%d\n", $2,$1) }' | tr -d ' '
 
 declare -A allFields=(
 	[DISPLAYTIME]=1

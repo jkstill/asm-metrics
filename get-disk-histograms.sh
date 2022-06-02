@@ -29,7 +29,7 @@ histogramScale=20
 
 # histograms per disk
 
-for dg in $(getcol.sh -c DISKGROUP_NAME -f $hdrFile   | sort -u)
+for dg in $(getcol.sh -d, -c DISKGROUP_NAME -f $hdrFile   | sort -u)
 do
 	for ioType in reads writes
 	do

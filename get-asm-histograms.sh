@@ -21,7 +21,7 @@ histogramScale=100
 
 [ -z $hdrFile ] && { echo "No asm metrics files found"; exit 1; }
 
-for dg in $(getcol.sh -c DISKGROUP_NAME -f $hdrFile   | sort -u)
+for dg in $(getcol.sh -d, -c DISKGROUP_NAME -f $hdrFile   | sort -u)
 do
 	for ioType in reads writes
 	do

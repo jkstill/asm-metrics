@@ -14,7 +14,7 @@ declare chartType=scatter
 
 for instance in DB0007 DBP008
 do
-	for diskGroup in $(getcol.sh -d , -c DISKGROUP_NAME -f logs/asm-data-20220116-034544.csv | sort -u)
+	for diskGroup in $(getcol.sh -d, -c DISKGROUP_NAME -f logs/asm-data-20220116-034544.csv | sort -u)
 	do
 			
 		declare xlsxFile=$xlsxDir/${DB}-${instance}-$diskGroup-readtim.xlsx

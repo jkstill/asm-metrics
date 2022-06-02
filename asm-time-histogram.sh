@@ -148,9 +148,9 @@ done
 # do not know why there may be a line of '^0$'
 grep -E "(^DISPLAYTIME|,$diskNumber,$diskGroup,)" $asmMetricsFile | grep -v '^0$'  > $csvTempFile
 
-#ROWCOUNT=$(getcol.sh -c $metricName -f <( grep -E "(^DISPLAYTIME|,$diskGroup+,)" $asmMetricsFile) | grep -v '^0$' | wc -l)
+#ROWCOUNT=$(getcol.sh -d, -c $metricName -f <( grep -E "(^DISPLAYTIME|,$diskGroup+,)" $asmMetricsFile) | grep -v '^0$' | wc -l)
 # exclude times of 0 as there was no read or write
-ROWCOUNT=$(getcol.sh -c $metricName -f $csvTempFile | grep -v '^0$' | wc -l)
+ROWCOUNT=$(getcol.sh -d, -c $metricName -f $csvTempFile | grep -v '^0$' | wc -l)
 
 export ROWCOUNT
 
@@ -166,7 +166,7 @@ export ROWCOUNT
 
 #exit
 
-getcol.sh -c $metricName -f $csvTempFile \
+getcol.sh -d, -c $metricName -f $csvTempFile \
 	| grep -v '^0$'\
 	| perl -p -e '$_ *= 1000; $_=int($_); $_ .= qq{\n}' \
 	| sort -nr | uniq -c \
