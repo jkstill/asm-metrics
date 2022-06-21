@@ -15,18 +15,18 @@ do
 	echo 
 	
 	# adjust path to asm-time-histogram.sh as necessary
-	asm-time-histogram.sh -s $readTimeScale -t reads -f $file  | head -10
+	./asm-time-histogram.sh -s $readTimeScale -t reads -f $file  | head -10
 	echo '...'
-	asm-time-histogram.sh -s $readTimeScale -t reads -f $file  | tail -10
+	./asm-time-histogram.sh -s $readTimeScale -t reads -f $file  | tail -10
 
 	echo 
 	echo "   === AVG_WRITE_TIME "
 	echo "   each '*' == $writeTimeScale writes "
 	echo 
 
-	asm-time-histogram.sh -s $writeTimeScale -t writes -f $file  | head -10
+	./asm-time-histogram.sh -s $writeTimeScale -t writes -f $file  | head -10
 	echo '...'
-	asm-time-histogram.sh -s $writeTimeScale -t writes -f $file  | tail -10
+	./asm-time-histogram.sh -s $writeTimeScale -t writes -f $file  | tail -10
 
 
 done
