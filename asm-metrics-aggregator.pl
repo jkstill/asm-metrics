@@ -185,7 +185,12 @@ while(<>) {
 					&& defined( $aggs{$aggKey}->{'WRITES'})
 				) {
 					if ( $aggs{$aggKey}->{'WRITES'} && $aggs{$aggKey}->{'WRITE_TIME'}) {
-						$aggs{$aggKey}->{'AVG_WRITE_TIME'} = $aggs{$aggKey}->{'WRITE_TIME'} / $aggs{$aggKey}->{'WRITES'};
+						eval {
+							$aggs{$aggKey}->{'AVG_WRITE_TIME'} = $aggs{$aggKey}->{'WRITE_TIME'} / $aggs{$aggKey}->{'WRITES'};
+						};
+						if ( $@ ) {
+							warn "write calc error: $@\n";
+						}
 					} else {
 						$aggs{$aggKey}->{'AVG_WRITE_TIME'} = 0;
 					}
@@ -195,7 +200,12 @@ while(<>) {
 					&& defined( $aggs{$aggKey}->{'READS'})
 				) {
 					if ( $aggs{$aggKey}->{'READS'} && $aggs{$aggKey}->{'READ_TIME'}) {
-						$aggs{$aggKey}->{'AVG_READ_TIME'} = $aggs{$aggKey}->{'READ_TIME'} / $aggs{$aggKey}->{'READS'};
+						eval {
+							$aggs{$aggKey}->{'AVG_READ_TIME'} = $aggs{$aggKey}->{'READ_TIME'} / $aggs{$aggKey}->{'READS'};
+						};
+						if ( $@ ) {
+							warn "read calc error: $@\n";
+						}
 					} else {
 						$aggs{$aggKey}->{'AVG_READ_TIME'} = 0;
 					}
