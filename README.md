@@ -124,6 +124,15 @@ Three new corrected files will be created:
   asm-metrics-2-corrected.csv
   asm-metrics-3-corrected.csv
 
+### reads-per-disk.sh
+
+After running `asm-metrics-aggregator_bydisk.sh`, use `reads-per-disk.sh` to create a log file with a histogram of reads for each disk in the diskgroup.
+
+### writes-per-disk.sh
+
+After running `asm-metrics-aggregator_bydisk.sh`, use `writes-per-disk.sh` to create a log file with a histogram of writes for each disk in the diskgroup.
+
+
 # Processing ASM Metrics Data
 Data is raw.  Metrics are per diskgroup and disk every 20 seconds.
 
