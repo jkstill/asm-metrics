@@ -1,6 +1,4 @@
 
-
-
 ASM Metrics Collector
 =====================
 
@@ -95,6 +93,51 @@ Get disktimes per disk for instance 1, the DATA diskgroup:
 ```text
 $ grep -ahE 'orcl01,orcl,.*,DATA,' <(tail -q -n+2 logs/asm-*.csv)  | cut -d, -f1,7,12 | ./disk-group-by-timestamp.pl > db-disk-breakout/db007-data001-readtim.csv
 ```
+### gen-sed-anonymize.sh
+
+This script will generate a sed file `anonymize.sed' containing the names of diskgroups.
+
+As generated, nothing will actually be changed.
+
+Edit the file to change the names as you would like.
+
+Here is an example file that was just generated:
+
+```text
+s/\b_mgmtdb/_mgmtdb/g
+s/\MYDB/MYDB/g
+s/\bMYCORP_DATA/MYCORP_DATA/g
+s/\bFRA_MYCORP_01/FRA_MYCORP_01/g
+s/\bDATA_MYCORP_01/DATA_MYCORP_01/g
+s/\bREDO_MYCORP_01/REDO_MYCORP_01/g
+s/\bREDO_MYCORP_02/REDO_MYCORP_02/g
+```
+
+
+After editing:
+
+```text
+s/\b_mgmtdb/_mgmtdb/g
+s/\MYDB/ORCL/g
+s/\bMYCORP_DATA/MDATA/g
+s/\bFRA_MYCORP_01/FRA/g
+s/\bDATA_MYCORP_01/DATA/g
+s/\bREDO_MYCORP_01/REDO_01/g
+s/\bREDO_MYCORP_02/REDO_02/g
+```
+
+Then just run the sed script for each CSV file.
+
+The CSV files will not be backed up, so don't use this on the only copy of the CSV files.
+
+```text
+for f in *.csv
+do
+  echo "working on $f"
+  sed -i -r -f anonymize.sed $f
+done
+```
+
 
 ###  get-disk-times.sh
 This script calculates avg read/write times per diskgroup.
