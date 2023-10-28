@@ -21,11 +21,14 @@ Of course, you can always just manually load the CSV into Excel for charting.
 
 ### [asm-metrics-collector.pl](https://github.com/jkstill/asm-metrics/blob/master/asm-metrics-collector.pl)
 Collect ASM metrics for further processing.
+Use `asm-metrics-collector.sh`
 
 ### [asm-metrics-collector.sh](https://github.com/jkstill/asm-metrics/blob/master/asm-metrics-collector.sh)
 bash driver example 
 
-## [run-std-asm.sh](https://github.com/jkstill/asm-metrics/blob/master/run-std-asm.sh)
+## Data Slice and Dice and Charting
+
+### [run-std-asm.sh](https://github.com/jkstill/asm-metrics/blob/master/run-std-asm.sh)
  Calls all of the following scripts in the correct order.
  
 ### [asm-metrics-aggregator.pl](https://github.com/jkstill/asm-metrics/blob/master/asm-metrics-aggregator.pl)
