@@ -4,8 +4,12 @@
 # adjust values as needed
 
 # full path required
-homeDir=/mnt/zips/tmp/health-check-data/servers
-binDir=/mnt/zips/tmp/health-check-data/bin
+# used when there are multiple directories of metrics
+#homeDir=/mnt/zips/tmp/health-check-data/servers
+#binDir=/mnt/zips/tmp/health-check-data/bin
+
+homeDir=$(pwd)
+binDir=$(pwd)
 
 cd $homeDir || { echo "could not cd to $homeDir"; exit 1; }
 [ -d $binDir ] || { echo "$binDir does not exist or is not a directory"; exit 1; }
@@ -32,15 +36,17 @@ Adjust as necessary
 
 COMMENT
 
-for metricDir in server00?/asm-metrics_data
-do
-	echo "#########################################################"
-	echo "dir: $metricDir"
-	cd $metricDir
-	[[ $? -ne 0 ]] && {
-		echo failed to cd to $metricDir
-		exit 1
-	}
+# the loop is only used if there are several sets of data in local directories
+# server001, server002, ...
+#for metricDir in server00?/asm-metrics_data
+#do
+	#echo "#########################################################"
+	#echo "dir: $metricDir"
+	#cd $metricDir
+	#[[ $? -ne 0 ]] && {
+		#echo failed to cd to $metricDir
+		#exit 1
+	#}
 	echo -n 'PWD: '
 	pwd
 
@@ -56,6 +62,8 @@ do
 	echo "running: asm-metrics-add-iops.sh"
 	$binDir/asm-metrics-add-iops.sh
 
+	# this script uses outlier-remove.py and flatten.py python scripts
+	# skip all the following if the python scripts are not used
 	echo "running: asm-metrics-cleaned.sh"
 	$binDir/asm-metrics-cleaned.sh
 
@@ -70,6 +78,6 @@ do
 	
 	cd $homeDir
 
-done
+#done
 
 
