@@ -27,11 +27,7 @@ Use defaults:
 
 Set all of the variables to non-default values:
 
-<<<<<<< HEAD
-  nohup DAYS_TO_COLLECT=5 INTERVAL_SECONDS=30 ITERATIONS_PER_DAY=2880 ./asm-metrics-collector.sh &
-=======
   DAYS_TO_COLLECT=5 INTERVAL_SECONDS=30 ITERATIONS_PER_DAY=2880 nohup ./asm-metrics-collector.sh &
->>>>>>> 57df1ae (corrected use of nohup)
 
 Help:
 
