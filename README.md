@@ -16,6 +16,36 @@ The Excel charting requires Perl with the `Excel::Writer::XLSX` module installed
 
 Of course, you can always just manually load the CSV into Excel for charting.
 
+## Quick Start to Collecting ASM Metrics
+
+
+```text
+
+HELP=Y ./asm-metrics-collector.sh
+
+There are several variables that can be set in the environment or on the command line:
+
+              HELP:  If set to 'Y' or 'y', this message will be displayed and the script will exit.
+           DRY_RUN:  If set to 'Y' or 'y', the script will exit after displaying the variables that have been set.
+   DAYS_TO_COLLECT:  The number of days to collect data.  Default is 3.
+  INTERVAL_SECONDS:  The number of seconds between each collection.  Default is 59.
+ITERATIONS_PER_DAY:  The number of iterations per day.  Default is 1440.
+
+Examples:
+
+Use defaults:
+
+  nohup ./asm-metrics-collector.sh &
+
+Set all of the variables to non-default values:
+
+  nohup DAYS_TO_COLLECT=5 INTERVAL_SECONDS=30 ITERATIONS_PER_DAY=2880 ./asm-metrics-collector.sh &
+
+Help:
+
+  HELP=Y ./asm-metrics-collector.sh
+
+```
 
 ## Scripts
 
