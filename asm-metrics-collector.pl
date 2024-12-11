@@ -12,7 +12,9 @@ use Getopt::Long;
 my $timestampFormat= 'yyyy-mm-dd hh24:mi:ss.ff6';
 my $dateFormat= 'yyyy-mm-dd hh24:mi:ss';
 my($db, $username, $password, $connectionMode);
-
+# probably not going to use fpPrecision, as specifying precision causes 
+# sprintf/printf to add a leading space to positive numbers
+my ($fpPrecision, $fpScale) = (10, 7);
 
 sub setOptionalColumns($$);
 my %optionalColumnsAvail=();
@@ -270,10 +272,10 @@ Display Time $currSnap{$key}->[$names{DISPLAYTIME}]
 
 		# calculate avg read/write times
 		my $reads=$modSnap{$key}->[$names{READS}];
-		$modSnap{$key}->[$names{AVG_READ_TIME}] = ($modSnap{$key}->[$names{READ_TIME}] / $reads) if $reads > 0;
+		$modSnap{$key}->[$names{AVG_READ_TIME}] = sprintf(qq{%.${fpScale}f},($modSnap{$key}->[$names{READ_TIME}] / $reads)) if $reads > 0;
 
 		my $writes=$modSnap{$key}->[$names{WRITES}];
-		$modSnap{$key}->[$names{AVG_WRITE_TIME}] = ($modSnap{$key}->[$names{WRITE_TIME}] / $writes) if $writes > 0;
+		$modSnap{$key}->[$names{AVG_WRITE_TIME}] = sprintf(qq{%.${fpScale}f},($modSnap{$key}->[$names{WRITE_TIME}] / $writes)) if $writes > 0;
 
 		if ($debug) {
 			print " mod after: $modSnap{$key}->[$names{READS}]\n" ;
